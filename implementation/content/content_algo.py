@@ -192,7 +192,7 @@ obj = job_postings("../data/dice_com-job_us_sample.csv")
 
 df_user = pd.read_csv("../data/survey_results_public.csv")
 df_job = pd.read_csv("../data/dice_com-job_us_sample.csv")
-output_csv_path = "../data/recommend_content_algo.csv"
+output_csv_path = "../data/test_data/recommend_content_algo.csv"
 recommendations_1000=pd.DataFrame(columns=df_job.columns)
 
 # Check if the output file already exists
