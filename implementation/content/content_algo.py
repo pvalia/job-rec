@@ -3,19 +3,11 @@
 
 import numpy as np 
 import pandas as pd 
-
 import matplotlib.pyplot as plt
 import os
-import nltk
 from nltk.corpus import stopwords
-import re
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import KMeans
-import json
 from os import listdir
-import glob
 from scipy import spatial
-import spacy
 
 def cosine_similarity(arr1,arr2):
     ans=1- spatial.distance.cosine(arr1,arr2)
@@ -27,24 +19,25 @@ class job_postings:
     def __init__(self,link):
         self.df2=pd.read_csv(link)
         self.training_range=int(len(self.df2.loc[:,'uniq_id']))
-    def check_threshold(self, threshold,ele):
+
+    def check_threshold(self, threshold, ele):
         if(ele[0]!=threshold[0][0] and abs(ele[1]-threshold[0][1])<0.03):
             return True
         else:
-            return False   
+            return False 
+          
     def match_profile(self,input_path,user_id,flag=0): #(content)
-        #Match a given user_id with all jobs in the database
         
+        #Match user_id with all jobs in the database
         df=pd.read_csv(input_path+"domain_user_profile.csv",index_col='Respondent')
-        #print("test1")
-        #print(df.columns)
         matches=dict()
+
+        #flag 0 means user is already in the database
         if(flag==0):
             if(user_id in df.index):
                 userdomain=df.loc[user_id,:]
-                #print("test2")
-                #print(userdomain)
-                #If user_id exists, retrieve the user profile from input_path
+
+                #If user_id exists, retrieve the user info from all csv's
                 df=pd.read_csv(input_path+"languages_profile_user.csv",index_col='Respondent')
                 userlanguages=df.loc[user_id,:]
 
@@ -57,19 +50,18 @@ class job_postings:
                 df=pd.read_csv(input_path+"databases_profile_user.csv",index_col='Respondent')
                 userdatabases=df.loc[user_id,:]
 
+                #fill all NaN with 0
                 userdomain=np.asarray(userdomain.fillna(0))
                 userlanguages=np.asarray(userlanguages.fillna(0))
                 userframeworks=np.asarray(userframeworks.fillna(0))
                 userplatforms=np.asarray(userplatforms.fillna(0))
                 userdatabases=np.asarray(userdatabases.fillna(0))
-                #print("test3")
-                #print(userdomain)
             else:
                 print("error! user id not in Dataset")
-            #If it doesn't,take user profile as input
+                
+        #otherwise its a new user, so they input their info
         else:
-
-            print("New user!Enter details..")
+            print("New user! Enter your details..")
             name=input("Enter full name")
             skills=input("Enter skills(comma separated). These are programming languages, frameworks,platforms or databases you have experience with").split(",")
             domains=''
@@ -87,16 +79,18 @@ class job_postings:
                     break
                 else:
                     print("Please enter valid domain")
-            #domains=list(map(lambda x:x.lower(),domains))
+
+            #converts all the input to lowercase
+            domains=list(map(lambda x:x.lower(),domains))
             skills=list(map(lambda x:x.lower(),skills))                
 
             userdomain=pd.DataFrame(columns=df.columns)
             dictionary=dict()
+            #goes through the user domains and sets a 1 for ones that are relevant
             for domain in domains:
                 dictionary[domain]=1.0
             userdomain=userdomain.append(dictionary,ignore_index=True)
             
-
             df=pd.read_csv(input_path+"languages_profile_user.csv",index_col='Respondent')
             userlanguages=pd.DataFrame(columns=df.columns)
             dictionary=dict()
@@ -128,7 +122,8 @@ class job_postings:
                 if(skill in df.columns):
                     dictionary[skill]=1.0
             userdatabases=userdatabases.append(dictionary,ignore_index=True)
-            #print(userdomain)
+
+            #sets a 0 for the rest of the feilds
             userdomain=np.asarray(userdomain.iloc[0,:].fillna(0))
             userlanguages=np.asarray(userlanguages.iloc[0,:].fillna(0))
             userframeworks=np.asarray(userframeworks.iloc[0,:].fillna(0))
@@ -140,26 +135,27 @@ class job_postings:
         jobframeworks=pd.read_csv(input_path+'frameworks_profile_job.csv',index_col='uniq_id')
         jobplatforms=pd.read_csv(input_path+'platforms_profile_job.csv',index_col='uniq_id')
         jobdatabases=pd.read_csv(input_path+'databases_profile_job.csv',index_col='uniq_id')
-        #print(len(jobdomain.index),len(joblanguages.index))
-        
         
         for i in jobdomain.index:
-            #print(i)
+
             domain=jobdomain.loc[i,:].fillna(0)
             language=joblanguages.loc[i,:].fillna(0)
             framework=jobframeworks.loc[i,:].fillna(0)
             platform=jobplatforms.loc[i,:].fillna(0)
             database=jobdatabases.loc[i,:].fillna(0)
+
             job_id=str(i)
+
             domain=np.asarray(domain)
             language=np.asarray(language)
             framework=np.asarray(framework)
             platform=np.asarray(platform)
             database=np.asarray(database)
-            #print(len(domain),len(userdomain))
+
+            #for every job in the database a similarity score is calc between user skills and job skills
             score=(0.7*cosine_similarity(domain,userdomain))+(0.3*(cosine_similarity(language,userlanguages)+cosine_similarity(framework,userframeworks)+cosine_similarity(platform,userplatforms)+cosine_similarity(database,userdatabases)))
             matches[job_id]=score
-            score=(0.7*cosine_similarity(domain,userdomain))+(0.3*(cosine_similarity(language,userlanguages)+cosine_similarity(framework,userframeworks)+cosine_similarity(platform,userplatforms)+cosine_similarity(database,userdatabases)))
+            
             #Initializing job profiles for later access
             self.job_domain=domain
             self.job_language=language
@@ -172,12 +168,13 @@ class job_postings:
             self.user_framework=userframeworks
             self.user_platform=userplatforms
             self.user_database=userdatabases
-        matches=sorted(matches.items(),key=lambda x:x[1],reverse=True)
-        #print("test4")
-        #print(userdomain)
-        recommendations=matches[:10]
-        print("recommendations are")
 
+        #sort jobs in descending order    
+        matches=sorted(matches.items(),key=lambda x:x[1],reverse=True)
+        #take top 10
+        recommendations=matches[:10]
+
+        #gets job info for reccomendations
         rows=pd.DataFrame(columns=self.df2.columns)
         count=0
         for i in recommendations:
@@ -188,19 +185,16 @@ class job_postings:
 
 #creates top 10 recommendations for each user
 import os
-obj = job_postings("../data/dice_com-job_us_sample.csv")
-
-df_user = pd.read_csv("../data/survey_results_public.csv")
-df_job = pd.read_csv("../data/dice_com-job_us_sample.csv")
-output_csv_path = "../data/test_data/recommend_content_algo.csv"
-recommendations_1000=pd.DataFrame(columns=df_job.columns)
+obj = job_postings("./data/dice_com-job_us_sample.csv")
+df_user = pd.read_csv("./data/survey_results_public.csv")
+output_csv_path = "./data/test_data/test.csv"
 
 # Check if the output file already exists
 write_header = not os.path.exists(output_csv_path)
 
-for ele in df_user.loc[:, 'Respondent'].tolist()[:10]:
-    rows = obj.match_profile("../data/", ele)
-    rows['Respondent'] = ele
+for user in df_user.loc[:, 'Respondent'].tolist()[:1]:
+    rows = obj.match_profile("./data/", user)
+    rows['Respondent'] = user
     #recommendations_1000 = pd.concat([recommendations_1000, rows.head(1)], ignore_index=True)
     #print("recommendations_1000", recommendations_1000)
 
@@ -213,5 +207,14 @@ for ele in df_user.loc[:, 'Respondent'].tolist()[:10]:
     # Set write_header to False after writing the header for the first time
     write_header = False
 
+# ------------ for new user -------------
+    # rows = obj.match_profile("./data/", user, flag=1)
+    # rows['Respondent'] = user
+    # rows = rows[['Respondent'] + [col for col in rows.columns if col != 'Respondent']]
+    # rows.to_csv(output_csv_path, mode='a', index=False, header=write_header)
+    # write_header = False
+
+#df_job = pd.read_csv("../data/dice_com-job_us_sample.csv")
+#recommendations_1000=pd.DataFrame(columns=df_job.columns)
 #recommendations_1000.to_csv("../data/collaborative_filt/recommendations3.csv")
 
