@@ -38,7 +38,6 @@ def text_scrubber(values):
         if pd.isna(string):
             result.append(np.nan)
         else:
-            # Regex as explained above
             temp = re.sub('(\(.*\))', '', string)
             temp = re.sub('&#39;|\x92', '\'', temp)
             temp = re.sub(' &amp; |&amp;|\x95|:|;|&|\.|/| and ', ',', temp)
@@ -176,7 +175,7 @@ def intra_list_similarity(predicted: List[list], feature_df: pd.DataFrame) -> fl
     ils = [_single_list_similarity(predicted[u], feature_df, u) for u in Users]
     return np.mean(ils)
 
-
+#Cleaning the data
 df = pd.read_csv("../../data/dice_com-job_us_sample.csv",encoding='cp850')
 
 df['skills'] = text_scrubber(df['skills'])
@@ -189,8 +188,8 @@ print(vocab)
 df['jobdescription'] = df['jobdescription'].apply(clean_text)
 
 mine = ['manager', 'amp', 'nbsp', 'responsibilities', 'used', 'skills', 'duties', 'work', 'worked', 'daily','services', 'job', 'using', 'com', 'end', 'prepare', 'prepared', 'lead', 'requirements','summary','Job Role','Position']
-vec = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), token_pattern='[a-zA-z]{3,50}', max_df=0.2, min_df=2, max_features=10000, stop_words=list(text.ENGLISH_STOP_WORDS.union(list(mine))), decode_error='ignore', vocabulary=None, binary=False)
 
+vec = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), token_pattern='[a-zA-z]{3,50}', max_df=0.2, min_df=2, max_features=10000, stop_words=list(text.ENGLISH_STOP_WORDS.union(list(mine))), decode_error='ignore', vocabulary=None, binary=False)
 df['skills']=df['skills']+df['jobdescription']+df['jobtitle']
 description_matrix2 = vec.fit_transform(df['skills'].values.astype('U'))
 description_matrix2 = pd.DataFrame(description_matrix2.todense())
@@ -223,6 +222,7 @@ cltr.fit(comps)
 
 # Add new column containing cluster number to sample, comps, and feature matrix dataframes
 
+#trying out 8.10.15 num of clucters ------------test more1!!!!!
 df['cluster_no'] = cltr.labels_
 X = comps
 y = df['cluster_no']
@@ -256,7 +256,7 @@ print(score3)
 
 cltr = KMeans(n_clusters=15)
 cltr.fit(comps)
-df['cluster_no'] = cltr2.labels_
+df['cluster_no'] = cltr.labels_
 X = comps
 y = df['cluster_no']
 X_train, X_test, y_train, y_test = train_test_split(X,y, stratify=y, random_state=42)
@@ -306,6 +306,7 @@ plt.ylabel('Component 2')
 plt.scatter(g['one'], g['two'], c=g['cluster_no'], cmap=cm.jet, alpha=0.5)
 plt.show()
 
+#dont need
 lr.fit(X, y)
 
 # Assign cluster number to each job title in comps to pull particular cluster out for comparison
