@@ -243,6 +243,7 @@ lr.fit(X_train, y_train)
 score2=lr.score(X_test, y_test)
 print(score2)
 
+#hierarchical clustering
 cltr2 = AgglomerativeClustering(n_clusters=15)
 cltr2.fit(comps)
 df['cluster_no'] = cltr2.labels_
@@ -254,6 +255,7 @@ lr.fit(X_train, y_train)
 score3=lr.score(X_test, y_test)
 print(score3)
 
+#partitional clustering
 cltr = KMeans(n_clusters=15)
 cltr.fit(comps)
 df['cluster_no'] = cltr.labels_
@@ -318,6 +320,7 @@ resume_text = '''jesus.brown3255@gmail.com SUMMARY:I am  a passion for using dat
 '''
 
 cos_sim_result=give_suggestions(resume_text)
+#only goes up to 7, remove that part
 
 
 top_10_recommendations=cos_sim_result.sort_values('score', ascending=False)[:10]
