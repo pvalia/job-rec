@@ -80,7 +80,7 @@ class scrapejob:
         time.sleep(3)
 
 
-    def scrape_job_data(self,limit:int=20):
+    def scrape_job_data(self,limit:int=5):
         """
             collects job postings until limit is met.
             limit(int)= number of job posts to collect
@@ -116,8 +116,9 @@ class scrapejob:
             #num_of_jobs= range(0,len(jobs))
             #for index,job in zip(num_of_jobs,jobs):
 
-
+            job_title_index=0
             for job in jobs:
+                
                 current_job_data={}
                 try:
                     
@@ -126,13 +127,38 @@ class scrapejob:
                 except:
                     continue
                 doc=BeautifulSoup(self.driver.page_source,"html.parser")
-                temp_position=doc.find("h2",class_="jobsearch-JobInfoHeader-title css-161nklr e1tiznh50") # title full stack , embedded, backend ....
+                temp_position=doc.find("h2",class_="jobsearch-JobInfoHeader-title css-jf6w2g e1tiznh50") # title full stack , embedded, backend ....
+               
+                print(temp_position.get_text())
                 position=temp_position.get_text().replace(" - job post","")
                 job_type_tracker= doc.find_all("div",class_="css-fhkva6 eu4oa1w0") # tracks the job type info
                 job_type_info=doc.find_all("div",class_="css-tvvxwd ecydgvn1")  # finds pay info , job type: full time , part time , contract , shift/schedule: night shift , full time
                 #finding position title
                 current_job_data["uid"]=uuid.uuid4().hex
-                current_job_data["company"]=doc.find("span",class_="css-1x7z1ps eu4oa1w0").get_text()
+               
+                titles=doc.find_all("span",class_="css-1x7z1ps eu4oa1w0")
+                location_company=doc.find_all("div",class_="css-t4u72d eu4oa1w0")
+                secondary_index=0
+
+                for title in titles:
+                    
+                    
+                    if job_title_index == secondary_index:
+                        current_job_data["company"]=title.get_text()
+                        break
+                    secondary_index+=1
+
+                secondary_index=0
+                for loc in location_company:
+                    
+                    
+                    if job_title_index == secondary_index:
+                        current_job_data["location"]=loc.get_text()
+                        break
+                    secondary_index+=1
+
+                job_title_index+=1
+                
                 if position is None:
                     continue
                 else:
@@ -144,7 +170,8 @@ class scrapejob:
                         current_job_data[tracker.get_text().lower()]=info.get_text().lower().replace("from ","") 
                     else:
                         current_job_data[tracker.get_text().lower()]=info.get_text().lower()
-                description=doc.find("div",class_="jobsearch-jobDescriptionText jobsearch-JobComponent-description css-1x2lix0 eu4oa1w0")
+                description=doc.find("div",class_="jobsearch-jobDescriptionText jobsearch-JobComponent-description css-10og78z eu4oa1w0")
+                print(description)
                 pp = pprint.PrettyPrinter(indent=4)
                 
                 time.sleep(3)
@@ -175,21 +202,35 @@ class scrapejob:
                 next_page=self.driver.find_elements("xpath","//ul[@class='css-1g90gv6 eu4oa1w0']/li[@class='css-227srf eu4oa1w0']/a[@aria-label='Next Page']")
                 
                 if(len(next_page)!=0 and len(self.jobs_to_upload)<=limit):
+                    job_title_index=0
                     print("clicking")
                     next_page[0].click()
                     time.sleep(3)
                 else:
 
-                    self.driver.close()
-                    json_object=json.dumps(self.jobs_to_upload,indent=4)
-                    with open("jobs_to_upload.json","w") as out:
+                    # self.driver.close()
+                    # json_object=json.dumps(self.jobs_to_upload,indent=4)
+                    # with open("jobs_to_upload.json","w") as out:
+                    #     out.write(json_object)
+                    # Assuming self.jobs_to_upload is already defined and is a list of dictionaries
+                    json_object = json.dumps(self.jobs_to_upload, indent=4)
+
+                    # Writing the JSON data to a file
+                    with open("jobs_to_upload.json", "w") as out:
                         out.write(json_object)
 
-                    databases_profile_job_df.to_csv("./databases_profile_job.csv")
-                    domain_job_profile_df.to_csv("./domain_job_profile.csv")
-                    frameworks_profile_job.to_csv("./frameworks_profile_job.csv")
-                    languages_profile_job.to_csv("./languages_profile_job.csv")
-                    platforms_profile_job.to_csv("./platforms_profile_job.csv")
+                    # Now, to convert JSON to CSV
+                    # Load the JSON data into a pandas DataFrame
+                    df = pd.read_json("jobs_to_upload.json")
+
+                    # Convert the DataFrame to a CSV file
+                    df.to_csv("jobs_to_upload.csv", index=False)  # Set index=False if you don't want pandas to write row indices
+
+                    # databases_profile_job_df.to_csv("./databases_profile_job.csv")
+                    # domain_job_profile_df.to_csv("./domain_job_profile.csv")
+                    # frameworks_profile_job.to_csv("./frameworks_profile_job.csv")
+                    # languages_profile_job.to_csv("./languages_profile_job.csv")
+                    # platforms_profile_job.to_csv("./platforms_profile_job.csv")
                     """
                     file = open('jobs-to-upload-data.pkl','wb')
 
@@ -330,7 +371,7 @@ class scrapejob:
 
         return df
 
-    def extract_frameworks(self,job_info_skills,uid,df):
+    def extract_languages(self,job_info_skills,uid,df):
         list_of_languages=[".net","abap","abc","actionscript","ada","ajax","apex","apl","applescript","arc","arduino","asp","assembly","atlas","automator","avenue","awk","bash","bc","bourne shell","bro"
                                     ,"c","c shell","c#","c++","caml","ceylon","cfml","ch","clarion","clean","clojure","cobol","cobra","coffeescript","coldfusion","css","ct","d","dart"
                                     ,"dcl","pascal","e","ecl","ec","ecmascript","egl","elixir","erlang","f#","falcon","felix","forth","fortran","fortress","go","gosu","groovy","hack","haskell",
@@ -341,13 +382,13 @@ class scrapejob:
                                     ,"typescript","vb.net","vba","vbscript","verilog","vhdl","visual basic 6","xen","xquery","xslt"]
         
 
-        languages_found={}
+        language_found={}
         if uid not in df.values:
-            languages_found['uid']=uid
+            language_found['uid']=uid
             for db_skill in job_info_skills:
                 if db_skill in list_of_languages:
-                    languages_found[db_skill]=1
-            df.loc[len(df)]=languages_found
+                    language_found[db_skill]=1
+            df.loc[len(df)]=language_found
 
         return df
 
@@ -368,7 +409,7 @@ class scrapejob:
 
         return df
 
-    def extract_languages(self,job_info_skills,uid,df):
+    def extract_frameworks(self,job_info_skills,uid,df):
         list_of_frameworks=[".net core","agile","angular","asp.net mvc","aura","aurelia","bottle","cakephp","cassandra","catalyst","cloudera","codeigniter","cordova","couchdb","cuba",
                                 "django","dojo","dropwizard","durandal","elm","ember.js","express","flask","flatiron","flex","flink","google web toolkit","grails","hadoop","halcyon","hive","hpcc",
                                 "jsf","koa","laravel","lift","lithium","map reduce","mason","meteor","moustache","ninja","nitro","node.js","pentaho","phoenix","play","polymer","pyramid",
