@@ -80,7 +80,7 @@ class scrapejob:
         time.sleep(3)
 
 
-    def scrape_job_data(self,limit:int=5):
+    def scrape_job_data(self,limit:int=100):
         """
             collects job postings until limit is met.
             limit(int)= number of job posts to collect
@@ -460,4 +460,4 @@ if __name__ =="__main__":
     look_for_job=scrapejob("indeed") 
     look_for_job.connect()
     look_for_job.search_job("software engineer")
-    look_for_job.scrape_job_data()
+    look_for_job.scrape_job_data(limit=100)
