@@ -111,39 +111,6 @@ def give_suggestions(resume_text):
     top_cos_sim = cos_sim.sort_values('score', ascending=False)[:10]
     print ('Top ten suggested for your cluster', '\n', top_cos_sim, '\n\n')
     
-    # print('Accuracy',)
-
-    # Print the top five suggested jobs for each cluster
-    mat = mat.T
-    for i in range(8):
-        cos_sim = pd.DataFrame(cosine_similarity(user_comps,comps[comps.index==i]))
-        samp_for_cluster = df[df['cluster_no']==i]
-        cos_sim = cos_sim.T.set_index(samp_for_cluster.index)
-        cos_sim.columns = ['score']
-        top_5 = cos_sim.sort_values('score', ascending=False)[:5]
-
-        # Merge top_5 with sample2 to get skills and description
-        merged_top_5 = top_5.merge(df, how='left', left_index=True, right_index=True)
-        print ('---------Top five suggested in cluster', i,  '---------\n', top_5, '\n\n')
-        # Vectorize to find skills needed for each job title
-       
-        for job in merged_top_5.index:
-            job_skills = pd.DataFrame(vec2.transform([merged_top_5.loc[job]['jobdescription'] + merged_top_5.loc[job]['skills']]).todense())
-            job_skills.columns = vec2.get_feature_names_out()
-            job_skills = job_skills.T
-            job_skills.columns = ['score']
-            job_skills = job_skills[job_skills['score'] != 0].sort_values('score', ascending=False)
-            mat.columns = ['score']
-            mat = mat[mat['score'] != 0]
-            needed_skills = []
-            scorey = []
-            for i in job_skills.index:
-                if i not in mat.index:    
-                    needed_skills.append(i)
-                    scorey.append(job_skills.loc[i][0])
-            top_skills = pd.DataFrame(list(zip(needed_skills, scorey)), columns=['Skills', 'Importance'])
-            print('To become a/an', job,',', '\n', 'these are the top ten skills you need:', '\n')
-            print(top_skills[:5], '\n')
     return top_cos_sim
 
 def _single_list_similarity(predicted: list, feature_df: pd.DataFrame, u: int) -> float:
@@ -223,18 +190,10 @@ cltr.fit(comps)
 # Add new column containing cluster number to sample, comps, and feature matrix dataframes
 
 #trying out 8.10.15 num of clucters ------------test more1!!!!!
-df['cluster_no'] = cltr.labels_
-X = comps
-y = df['cluster_no']
-X_train, X_test, y_train, y_test = train_test_split(X,y, stratify=y, random_state=42)
-lr = LogisticRegression(C=10, penalty='l2', multi_class='multinomial', solver='sag', max_iter=1000)
-lr.fit(X_train, y_train)
-score1=lr.score(X_test, y_test)
-print(score1)
 
-cltr1 = AgglomerativeClustering(n_clusters=10)
-cltr1.fit(comps)
-df['cluster_no'] = cltr1.labels_
+cltr = AgglomerativeClustering(n_clusters=10)
+cltr.fit(comps)
+df['cluster_no'] = cltr.labels_
 X = comps
 y = df['cluster_no']
 X_train, X_test, y_train, y_test = train_test_split(X,y, stratify=y, random_state=42)
@@ -242,18 +201,6 @@ lr = LogisticRegression(C=10, penalty='l2', multi_class='multinomial', solver='s
 lr.fit(X_train, y_train)
 score2=lr.score(X_test, y_test)
 print(score2)
-
-#hierarchical clustering
-cltr2 = AgglomerativeClustering(n_clusters=15)
-cltr2.fit(comps)
-df['cluster_no'] = cltr2.labels_
-X = comps
-y = df['cluster_no']
-X_train, X_test, y_train, y_test = train_test_split(X,y, stratify=y, random_state=42)
-lr = LogisticRegression(C=10, penalty='l2', multi_class='multinomial', solver='sag', max_iter=1000)
-lr.fit(X_train, y_train)
-score3=lr.score(X_test, y_test)
-print(score3)
 
 #partitional clustering
 cltr = KMeans(n_clusters=15)
@@ -267,28 +214,6 @@ lr.fit(X_train, y_train)
 score=lr.score(X_test, y_test)
 print(score)
 
-cltr3 = AgglomerativeClustering(n_clusters=20)
-cltr3.fit(comps)
-df['cluster_no'] = cltr3.labels_
-
-X = comps
-y = df['cluster_no']
-
-X_train, X_test, y_train, y_test = train_test_split(X,y, stratify=y, random_state=42)
-lr = LogisticRegression(C=10, penalty='l2', multi_class='multinomial', solver='sag', max_iter=1000)
-lr.fit(X_train, y_train)
-score4=lr.score(X_test, y_test)
-print(score4)
-
-clusters=[8,10,15,20]
-accuracy=[score1,score2,score3,score4]
-
-plt.plot(clusters,accuracy, color='g')
-plt.xlabel('No of Clusters')
-plt.ylabel('Accuracy')
-plt.title('Accuracy')
-plt.show()
-
 # Look at clusters
 
 from sklearn.manifold import TSNE
@@ -297,7 +222,7 @@ tsne = TSNE()
 g = pd.DataFrame(tsne.fit_transform(comps), columns=['one', 'two'])
 
 
-g['cluster_no'] = cltr3.labels_
+g['cluster_no'] = cltr.labels_
 
 import matplotlib.cm as cm
 

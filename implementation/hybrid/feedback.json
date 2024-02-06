@@ -1,0 +1,17 @@
+[
+    {
+        "user_id": 1,
+        "job": "typescript, s, css, express, r, node.js, javascript, html, react",
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "user_data": "aws, s, .net, angular, sql, css, azure, javascript, c, agile, html",
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "user_data": "sql, oracle, css, java, self, spring, agile, s, html, javascript, sas",
+        "feedback": 0
+    }
+]

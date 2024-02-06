@@ -1,0 +1,177 @@
+[
+    {
+        "user_id": 2,
+        "job_id": "222d8da33f324a7b836368cdada0a053",
+        "suggestions": ".Net Developer",
+        "score": 0.40646938289767204,
+        "feedback": 1
+    },
+    {
+        "user_id": 2,
+        "job_id": "0981ade90cdb400da51e2b2d531e1e35",
+        "suggestions": "W0156 Senior .Net Developer",
+        "score": 0.6319455688979458,
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "job_id": "bc87c9750bc24d6b9707a2d5f15ac61f",
+        "suggestions": "Software Developer - Full Stack -(C#,Angular 5+,SQL,GIT,XML,JSON,Regression Testing,Web Services)",
+        "score": 0.5462496409275934,
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "job_id": "7675e3c731874019ac4d2ee0008fd72e",
+        "suggestions": "Senior Full stack Developer(C#, Angular 5, SQL, Regression testing)",
+        "score": 0.5161034621019359,
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "job_id": "6e86f4c97b304c709dfc11aa677d84ff",
+        "suggestions": "Full Stack .Net Developer",
+        "score": 0.4849621874969789,
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "job_id": "42d77daf7ec04c308d5754bd0224d98d",
+        "suggestions": "Senior Full Stack Developer",
+        "score": 0.418917442521698,
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "job_id": "63ad7bdf94804ae292d0a72cf3536e39",
+        "suggestions": "Senior Front End Developer",
+        "score": 0.4037494252179205,
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "job_id": "56f447ec4ab14c17af906d61b87fc70d",
+        "suggestions": "W0169 Senior Software Developer ( Microsoft/Azure Stack)",
+        "score": 0.40167836417686986,
+        "feedback": 0
+    },
+    {
+        "user_id": 2,
+        "job_id": "eb21d1f147d74bfdbdcc297fc8379b0e",
+        "suggestions": "Front-End Engineer",
+        "score": 0.3992952453781734,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "30d81db10a2442d7bef3c8ef551c4a9e",
+        "suggestions": "Associate Software Engineer, Operations",
+        "score": 0.6854780703090895,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "89037acfa8a34222a3eb15e924e99f52",
+        "suggestions": "Systems Analyst / Developer",
+        "score": 0.33678370650794226,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "9b15bd717dbb48559fb9208e47cab443",
+        "suggestions": "Platform Architect - Oracle Cloud Infrastructure",
+        "score": 0.3330102849034239,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "3e87ba5487c24dc0be989b5681508d91",
+        "suggestions": "Software Developer 6884-05",
+        "score": 0.3308376140916238,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "b3c67fc0dc9642d0b211acab78dc4df9",
+        "suggestions": "Senior Software Engineer",
+        "score": 0.3228744037687061,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "bef967d97b0f4579bc7f3bf150bfe14a",
+        "suggestions": "Java Engineer",
+        "score": 0.3126741080113072,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "40f9d7bb5ee741c399f3d36c5bbcbe92",
+        "suggestions": "Lead Software Engineer, Operations",
+        "score": 0.31159729324184265,
+        "feedback": 0
+    },
+    {
+        "user_id": 3,
+        "job_id": "6e2f3ad99bf44a618bb37bd6f849f5be",
+        "suggestions": "Senior Manager, Software Engineering",
+        "score": 0.3030906058150389,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "bdcfeb15a51c4dc0b4eea5b890afadde",
+        "suggestions": "Sr. Fullstack (Node.js/React) Developer",
+        "score": 0.6683897172219906,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "f79c64dc23cb47e9b7c8d42f2273248e",
+        "suggestions": "Software Developer - Front End",
+        "score": 0.5897983969405204,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "168b4a9b414f49199539737e72353654",
+        "suggestions": "7+ Yrs Sr. Front End Developer",
+        "score": 0.5471507357342178,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "1e95f0399b654eaa9e4cd54c7e3ca129",
+        "suggestions": "Senior Backend Developer",
+        "score": 0.4281958996155576,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "eafd7ed680da45548746b688a83dfcc3",
+        "suggestions": "Cloud Engineer",
+        "score": 0.4136070275777992,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "754e0e48de824cfbace64186a8d30298",
+        "suggestions": "Web Developer, Promotions",
+        "score": 0.39858885271440875,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "2c4c98a0362c485ba89f7da1d06a3d00",
+        "suggestions": "Web Applications Developer",
+        "score": 0.36932303638449143,
+        "feedback": 0
+    },
+    {
+        "user_id": 1,
+        "job_id": "4b8dfd06dd9d4a2c88e3221f5daa3e6d",
+        "suggestions": "Front-End Developer (Remote)",
+        "score": 0.32762543925489673,
+        "feedback": 0
+    }
+]
